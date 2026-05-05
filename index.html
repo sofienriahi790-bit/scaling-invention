@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>GLANZI App</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f172a">
+
+<style>
+
+body{
+  margin:0;
+  font-family:Arial;
+  background:#0f172a;
+  color:white;
+}
+
+/* HEADER */
+header{
+  text-align:center;
+  padding:15px;
+  background:#111827;
+  position:sticky;
+  top:0;
+}
+
+/* FILTER */
+.filters{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:5px;
+  padding:10px;
+}
+
+.filters button{
+  padding:8px;
+  border:none;
+  border-radius:10px;
+  background:#1e293b;
+  color:white;
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  padding:10px;
+}
+
+/* CARD */
+.card{
+  background:#1e293b;
+  border-radius:15px;
+  overflow:hidden;
+  text-align:center;
+  padding:10px;
+}
+
+.card img{
+  width:100%;
+  height:110px;
+  object-fit:cover;
+  border-radius:10px;
+}
+
+/* BUTTON */
+button{
+  width:100%;
+  padding:8px;
+  border:none;
+  border-radius:10px;
+  background:#2563eb;
+  color:white;
+}
+
+/* CART */
+.cart{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  background:#111827;
+  padding:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+🍽️ GLANZI RESTAURANT <br>
+🛒 <span id="count">0</span> items
+</header>
+
+<!-- FILTER -->
+<div class="filters">
+<button onclick="filter('all')">All</button>
+<button onclick="filter('food')">Food</button>
+<button onclick="filter('drink')">Drink</button>
+<button onclick="filter('dessert')">Dessert</button>
+</div>
+
+<!-- PRODUCTS -->
+<div class="grid" id="menu"></div>
+
+<!-- CART -->
+<div class="cart">
+Total: <b id="total">0</b> TND
+</div>
+
+<script>
+
+let cart=[];
+let total=0;
+
+let current="all";
+
+/* ================= 50 PRODUCTS ================= */
+let products = [
+
+/* FOOD 20 */
+{name:"Burger Classic",price:15,category:"food",img:"https://source.unsplash.com/400x300/?burger"},
+{name:"Chicken Burger",price:16,category:"food",img:"https://source.unsplash.com/400x300/?chicken-burger"},
+{name:"Cheese Burger",price:17,category:"food",img:"https://source.unsplash.com/400x300/?cheeseburger"},
+{name:"Pizza Margherita",price:18,category:"food",img:"https://source.unsplash.com/400x300/?pizza"},
+{name:"Pepperoni Pizza",price:22,category:"food",img:"https://source.unsplash.com/400x300/?pepperoni-pizza"},
+{name:"Sandwich",price:12,category:"food",img:"https://source.unsplash.com/400x300/?sandwich"},
+{name:"Tacos",price:14,category:"food",img:"https://source.unsplash.com/400x300/?tacos"},
+{name:"Hot Dog",price:10,category:"food",img:"https://source.unsplash.com/400x300/?hotdog"},
+{name:"Pasta",price:19,category:"food",img:"https://source.unsplash.com/400x300/?pasta"},
+{name:"Steak",price:30,category:"food",img:"https://source.unsplash.com/400x300/?steak"},
+{name:"Kebab",price:20,category:"food",img:"https://source.unsplash.com/400x300/?kebab"},
+{name:"Grilled Chicken",price:23,category:"food",img:"https://source.unsplash.com/400x300/?grilled-chicken"},
+{name:"Noodles",price:13,category:"food",img:"https://source.unsplash.com/400x300/?noodles"},
+{name:"Fish Burger",price:16,category:"food",img:"https://source.unsplash.com/400x300/?fish-burger"},
+{name:"BBQ Burger",price:19,category:"food",img:"https://source.unsplash.com/400x300/?bbq-burger"},
+{name:"Spicy Burger",price:17,category:"food",img:"https://source.unsplash.com/400x300/?spicy-burger"},
+{name:"Fries",price:6,category:"food",img:"https://source.unsplash.com/400x300/?fries"},
+{name:"Chicken Wings",price:18,category:"food",img:"https://source.unsplash.com/400x300/?chicken-wings"},
+{name:"Rice Bowl",price:15,category:"food",img:"https://source.unsplash.com/400x300/?rice-bowl"},
+{name:"Salad",price:10,category:"food",img:"https://source.unsplash.com/400x300/?salad"},
+
+/* DRINK 15 */
+{name:"Coca Cola",price:5,category:"drink",img:"https://source.unsplash.com/400x300/?coca-cola"},
+{name:"Pepsi",price:5,category:"drink",img:"https://source.unsplash.com/400x300/?pepsi"},
+{name:"Sprite",price:5,category:"drink",img:"https://source.unsplash.com/400x300/?sprite"},
+{name:"Water",price:1,category:"drink",img:"https://source.unsplash.com/400x300/?water"},
+{name:"Juice Orange",price:4,category:"drink",img:"https://source.unsplash.com/400x300/?orange-juice"},
+{name:"Coffee",price:3,category:"drink",img:"https://source.unsplash.com/400x300/?coffee"},
+{name:"Tea",price:3,category:"drink",img:"https://source.unsplash.com/400x300/?tea"},
+{name:"Milkshake",price:8,category:"drink",img:"https://source.unsplash.com/400x300/?milkshake"},
+{name:"Smoothie",price:9,category:"drink",img:"https://source.unsplash.com/400x300/?smoothie"},
+{name:"Energy Drink",price:7,category:"drink",img:"https://source.unsplash.com/400x300/?energy-drink"},
+{name:"Lemonade",price:4,category:"drink",img:"https://source.unsplash.com/400x300/?lemonade"},
+{name:"Ice Tea",price:5,category:"drink",img:"https://source.unsplash.com/400x300/?iced-tea"},
+{name:"Latte",price:6,category:"drink",img:"https://source.unsplash.com/400x300/?latte"},
+{name:"Cappuccino",price:6,category:"drink",img:"https://source.unsplash.com/400x300/?cappuccino"},
+{name:"Hot Chocolate",price:6,category:"drink",img:"https://source.unsplash.com/400x300/?hot-chocolate"},
+
+/* DESSERT 15 */
+{name:"Ice Cream",price:10,category:"dessert",img:"https://source.unsplash.com/400x300/?ice-cream"},
+{name:"Chocolate Cake",price:13,category:"dessert",img:"https://source.unsplash.com/400x300/?chocolate-cake"},
+{name:"Cheesecake",price:14,category:"dessert",img:"https://source.unsplash.com/400x300/?cheesecake"},
+{name:"Donut",price:5,category:"dessert",img:"https://source.unsplash.com/400x300/?donut"},
+{name:"Cupcake",price:5,category:"dessert",img:"https://source.unsplash.com/400x300/?cupcake"},
+{name:"Brownie",price:7,category:"dessert",img:"https://source.unsplash.com/400x300/?brownie"},
+{name:"Waffles",price:9,category:"dessert",img:"https://source.unsplash.com/400x300/?waffles"},
+{name:"Pancakes",price:8,category:"dessert",img:"https://source.unsplash.com/400x300/?pancakes"},
+{name:"Tiramisu",price:12,category:"dessert",img:"https://source.unsplash.com/400x300/?tiramisu"},
+{name:"Macarons",price:10,category:"dessert",img:"https://source.unsplash.com/400x300/?macarons"},
+{name:"Fruit Salad",price:7,category:"dessert",img:"https://source.unsplash.com/400x300/?fruit-salad"},
+{name:"Chocolate Muffin",price:6,category:"dessert",img:"https://source.unsplash.com/400x300/?muffin"},
+{name:"Milk Cake",price:9,category:"dessert",img:"https://source.unsplash.com/400x300/?cake"},
+{name:"Ice Cream Cup",price:8,category:"dessert",img:"https://source.unsplash.com/400x300/?ice-cream-cup"},
+{name:"Pudding",price:6,category:"dessert",img:"https://source.unsplash.com/400x300/?pudding"}
+
+];
+
+let filtered=[];
+
+/* DISPLAY */
+function display(){
+let menu=document.getElementById("menu");
+menu.innerHTML="";
+
+filtered = current==="all" ? products : products.filter(p=>p.category===current);
+
+filtered.forEach((p,i)=>{
+menu.innerHTML+=`
+<div class="card">
+<img src="${p.img}">
+<h4>${p.name}</h4>
+<p>${p.price} TND</p>
+<button onclick="add(${i})">Add</button>
+</div>`;
+});
+}
+
+display();
+
+/* FILTER */
+function filter(c){
+current=c;
+display();
+}
+
+/* CART */
+function add(i){
+let item=filtered[i];
+cart.push(item);
+total+=item.price;
+
+document.getElementById("count").innerText=cart.length;
+document.getElementById("total").innerText=total;
+}
+
+</script>
+
+</body>
+</html>

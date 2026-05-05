@@ -1,0 +1,91 @@
+body{
+  margin:0;
+  font-family:Arial;
+  background:#0f172a;
+  color:white;
+}
+
+/* HEADER APP */
+.hero{
+  position:sticky;
+  top:0;
+  background:#111827;
+  padding:15px;
+  text-align:center;
+  font-size:18px;
+  z-index:10;
+}
+
+/* SEARCH */
+.search-box{
+  padding:10px;
+}
+
+.search-box input{
+  width:100%;
+  padding:12px;
+  border-radius:25px;
+  border:none;
+  outline:none;
+  background:#1e293b;
+  color:white;
+}
+
+/* MENU = APP GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  padding:10px;
+}
+
+/* CARD */
+.card{
+  background:#1e293b;
+  border-radius:15px;
+  overflow:hidden;
+  text-align:center;
+  padding:10px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.3);
+}
+
+.card img{
+  width:100%;
+  height:110px;
+  object-fit:cover;
+  border-radius:10px;
+}
+
+.card h3{
+  font-size:14px;
+  margin:5px 0;
+}
+
+/* BUTTON */
+button{
+  width:100%;
+  padding:8px;
+  border:none;
+  border-radius:10px;
+  background:#2563eb;
+  color:white;
+}
+
+/* CART FIXED BOTTOM (like app) */
+.cart-panel{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  background:#111827;
+  padding:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-top:1px solid #334155;
+}
+
+/* CART LIST SMALL */
+#cart-list{
+  display:none; /* باش ما يفسدش شكل app */
+}
